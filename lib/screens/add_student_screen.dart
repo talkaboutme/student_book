@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../data/local/db/app_db.dart';
+import 'package:drift/drift.dart' as drift;
 
-import '../widgets/gender_select.dart';
+enum Gender { male, female }
 
 class AddStudentScreen extends StatefulWidget {
   const AddStudentScreen({super.key});
@@ -10,8 +12,17 @@ class AddStudentScreen extends StatefulWidget {
 }
 
 class _AddStudentScreenState extends State<AddStudentScreen> {
+  late AppDb _db;
   final TextEditingController _studentNameController = TextEditingController();
   final TextEditingController _studentIdController = TextEditingController();
+  Gender genderSelection = Gender.male;
+  String enumValue = 'male';
+
+  @override
+  void initState() {
+    super.initState();
+    _db = AppDb();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +32,25 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              final entity = StudentInfosCompanion(
+                  studentId: drift.Value(int.parse(_studentIdController.text)),
+                  name: drift.Value(_studentNameController.text),
+                  gender: drift.Value(enumValue));
+              _db.insertStudent(entity).then(
+                    (value) => ScaffoldMessenger.of(context).showMaterialBanner(
+                      MaterialBanner(
+                        content: Text('New Student inserted: $value'),
+                        actions: [
+                          TextButton(
+                              onPressed: () => ScaffoldMessenger.of(context)
+                                  .hideCurrentMaterialBanner(),
+                              child: const Text('Close'))
+                        ],
+                      ),
+                    ),
+                  );
+            },
             icon: const Icon(Icons.save),
           ),
         ],
@@ -42,7 +71,32 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                     txtLabel: 'Student Name',
                     type: TextInputType.name),
                 const SizedBox(height: 16),
-                const GenderSelection(),
+                RadioListTile<Gender>(
+                  title: const Text('male'),
+                  value: Gender.male,
+                  groupValue: genderSelection,
+                  onChanged: (Gender? value) {
+                    setState(() {
+                      if (value != null) {
+                        genderSelection = value;
+                        enumValue = value.name;
+                      }
+                    });
+                  },
+                ),
+                RadioListTile<Gender>(
+                  title: const Text('female'),
+                  value: Gender.female,
+                  groupValue: genderSelection,
+                  onChanged: (Gender? value) {
+                    setState(() {
+                      if (value != null) {
+                        genderSelection = value;
+                        enumValue = value.name;
+                      }
+                    });
+                  },
+                ),
               ],
             ),
           )
