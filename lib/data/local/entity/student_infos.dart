@@ -4,7 +4,7 @@ class StudentInfos extends Table {
   @override
   String get tableName => 'student_infos';
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get studentId => integer().unique()();
+  TextColumn get studentId => text().named('student_id')();
   TextColumn get name => text()();
   TextColumn get gender => text()();
 }

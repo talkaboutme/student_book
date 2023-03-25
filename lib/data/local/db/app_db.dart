@@ -19,7 +19,7 @@ LazyDatabase _openConnection() {
     // put the database file, called db.sqlite here, into the documents folder
     // for your app.
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'srn_db_imported.sqlite'));
+    final file = File(p.join(dbFolder.path, 'srn_db_imported_2.sqlite'));
 
     if (!await file.exists()) {
       // Extract the pre-populated database file from assets
@@ -58,7 +58,14 @@ class AppDb extends _$AppDb {
   }
 
   Future<int> insertStudent(StudentInfosCompanion entity) async {
-    return await into(studentInfos).insert(entity);
+    try {
+      return await into(studentInfos).insert(entity);
+    } on SqliteException {
+      return -1;
+    } catch (e) {
+      print(e);
+    }
+    return -2;
   }
 
   Future<int> deleteStudent(int id) async {

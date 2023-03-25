@@ -21,11 +21,9 @@ class $StudentInfosTable extends StudentInfos
   static const VerificationMeta _studentIdMeta =
       const VerificationMeta('studentId');
   @override
-  late final GeneratedColumn<int> studentId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> studentId = GeneratedColumn<String>(
       'student_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -80,7 +78,7 @@ class $StudentInfosTable extends StudentInfos
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       studentId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}student_id'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}student_id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       gender: attachedDatabase.typeMapping
@@ -96,7 +94,7 @@ class $StudentInfosTable extends StudentInfos
 
 class StudentInfo extends DataClass implements Insertable<StudentInfo> {
   final int id;
-  final int studentId;
+  final String studentId;
   final String name;
   final String gender;
   const StudentInfo(
@@ -108,7 +106,7 @@ class StudentInfo extends DataClass implements Insertable<StudentInfo> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['student_id'] = Variable<int>(studentId);
+    map['student_id'] = Variable<String>(studentId);
     map['name'] = Variable<String>(name);
     map['gender'] = Variable<String>(gender);
     return map;
@@ -128,7 +126,7 @@ class StudentInfo extends DataClass implements Insertable<StudentInfo> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return StudentInfo(
       id: serializer.fromJson<int>(json['id']),
-      studentId: serializer.fromJson<int>(json['studentId']),
+      studentId: serializer.fromJson<String>(json['studentId']),
       name: serializer.fromJson<String>(json['name']),
       gender: serializer.fromJson<String>(json['gender']),
     );
@@ -138,14 +136,14 @@ class StudentInfo extends DataClass implements Insertable<StudentInfo> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'studentId': serializer.toJson<int>(studentId),
+      'studentId': serializer.toJson<String>(studentId),
       'name': serializer.toJson<String>(name),
       'gender': serializer.toJson<String>(gender),
     };
   }
 
   StudentInfo copyWith(
-          {int? id, int? studentId, String? name, String? gender}) =>
+          {int? id, String? studentId, String? name, String? gender}) =>
       StudentInfo(
         id: id ?? this.id,
         studentId: studentId ?? this.studentId,
@@ -177,7 +175,7 @@ class StudentInfo extends DataClass implements Insertable<StudentInfo> {
 
 class StudentInfosCompanion extends UpdateCompanion<StudentInfo> {
   final Value<int> id;
-  final Value<int> studentId;
+  final Value<String> studentId;
   final Value<String> name;
   final Value<String> gender;
   const StudentInfosCompanion({
@@ -188,7 +186,7 @@ class StudentInfosCompanion extends UpdateCompanion<StudentInfo> {
   });
   StudentInfosCompanion.insert({
     this.id = const Value.absent(),
-    required int studentId,
+    required String studentId,
     required String name,
     required String gender,
   })  : studentId = Value(studentId),
@@ -196,7 +194,7 @@ class StudentInfosCompanion extends UpdateCompanion<StudentInfo> {
         gender = Value(gender);
   static Insertable<StudentInfo> custom({
     Expression<int>? id,
-    Expression<int>? studentId,
+    Expression<String>? studentId,
     Expression<String>? name,
     Expression<String>? gender,
   }) {
@@ -210,7 +208,7 @@ class StudentInfosCompanion extends UpdateCompanion<StudentInfo> {
 
   StudentInfosCompanion copyWith(
       {Value<int>? id,
-      Value<int>? studentId,
+      Value<String>? studentId,
       Value<String>? name,
       Value<String>? gender}) {
     return StudentInfosCompanion(
@@ -228,7 +226,7 @@ class StudentInfosCompanion extends UpdateCompanion<StudentInfo> {
       map['id'] = Variable<int>(id.value);
     }
     if (studentId.present) {
-      map['student_id'] = Variable<int>(studentId.value);
+      map['student_id'] = Variable<String>(studentId.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -1421,9 +1419,9 @@ class $SystemCodesTable extends SystemCodes
   @override
   List<GeneratedColumn> get $columns => [id, type, code, codeName];
   @override
-  String get aliasedName => _alias ?? 'system_code';
+  String get aliasedName => _alias ?? 'system_codes';
   @override
-  String get actualTableName => 'system_code';
+  String get actualTableName => 'system_codes';
   @override
   VerificationContext validateIntegrity(Insertable<SystemCode> instance,
       {bool isInserting = false}) {
